@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard de Salário</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0077cc;
+            margin-bottom: 25px;
+        }
+
+        select, input {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #005fa3;
+        }
+
+        #resultado {
+            margin-top: 25px;
+            padding: 10px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Barra do salário */
+        .barra-container {
+            margin-top: 20px;
+            background-color: #e6f2ff;
+            border-radius: 8px;
+            height: 30px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .barra {
+            height: 100%;
+            width: 0;
+            background-color: #4CAF50;
+            text-align: right;
+            padding-right: 10px;
+            color: white;
+            line-height: 30px;
+            font-weight: bold;
+            transition: width 0.7s ease, background-color 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Dashboard de Salário</h1>
+
+    <label>Escolha a linguagem:</label>
+    <select id="linguagem">
+        <option>Python</option>
+        <option>COBOL</option>
+        <option>JavaScript</option>
+        <option>Java</option>
+        <option>Kotlin</option>
+    </select>
+
+    <label>Anos de experiência:</label>
+    <input id="experiencia" type="number" min="0" placeholder="Digite quantos anos">
+
+    <label>Em qual país você pretende trabalhar:</label>
+    <select id="pais">
+        <option>Brasil</option>
+        <option>Japão</option>
+        <option>Alemanha</option>
+        <option>EUA</option>
+    </select>
+
+    <button id="botao">Calcular Salário</button>
+
+    <div id="resultado"></div>
+
+    <div class="barra-container">
+        <div class="barra" id="barraSalario">0</div>
+    </div>
+</div>
+
+<script>
+    const botao = document.getElementById("botao")
+    const experiencia = document.getElementById("experiencia")
+    const pais = document.getElementById("pais")
+    const linguagem = document.getElementById("linguagem")
+    const resultado = document.getElementById("resultado")
+    const barra = document.getElementById("barraSalario")
+
+    botao.addEventListener("click", function() {
+        const anosExperiencia = parseInt(experiencia.value) || 0
+        const paisEscolhido = pais.value
+        const linguagemEscolhida = linguagem.value
+
+        // Salário base por linguagem
+        const salariosBase = {
+            Python: 3000,
+            JavaScript: 4000,
+            Kotlin: 4200,
+            Java: 2800,
+            COBOL: 3800
+        }
+        let salarioBase = salariosBase[linguagemEscolhida] || 3000
+
+        // Bônus por experiência
+        salarioBase += anosExperiencia * 1000
+
+        // Multiplicador por país
+        const multiplicadoresPais = {
+            Brasil: 1,
+            EUA: 2,
+            Alemanha: 1.5,
+            Japão: 1.7
+        }
+        const multiplicador = multiplicadoresPais[paisEscolhido] || 1
+
+        // Salário final
+        const salarioFinal = salarioBase * multiplicador
+
+        // Mostrar resultado numérico
+        resultado.innerHTML = `💰 Salário estimado: R$ ${salarioFinal}`
+
+        // Ajustar a barra
+        const larguraMax = 100; // largura máxima da barra em %
+        const salarioMax = 20000; // referência para barra cheia
+        let largura = Math.min((salarioFinal / salarioMax) * larguraMax, 100)
+        barra.style.width = largura + '%'
+
+        // Cor da barra dinâmica
+        if (salarioFinal < 5000) barra.style.backgroundColor = '#ff4d4d'
+        else if (salarioFinal < 10000) barra.style.backgroundColor = '#ffa500'
+        else barra.style.backgroundColor = '#4CAF50'
+
+        barra.innerText = `R$ ${salarioFinal}`
+    })
+</script>
+
+</body>
+</html>
